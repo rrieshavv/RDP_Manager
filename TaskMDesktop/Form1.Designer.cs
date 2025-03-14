@@ -28,21 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            //button1 = new Button();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             dataGridView1 = new DataGridView();
+            logoutBtn = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
-            //// 
-            //// button1
-            //// 
-            //button1.Location = new Point(119, 91);
-            //button1.Name = "button1";
-            //button1.Size = new Size(75, 23);
-            //button1.TabIndex = 0;
-            //button1.Text = "Connect";
-            //button1.UseVisualStyleBackColor = true;
-            //button1.Click += button1_Click;
             // 
             // dataGridView1
             // 
@@ -55,14 +45,24 @@
             dataGridView1.TabIndex = 1;
             dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
             // 
+            // logoutBtn
+            // 
+            logoutBtn.Location = new Point(713, 12);
+            logoutBtn.Name = "logoutBtn";
+            logoutBtn.Size = new Size(75, 23);
+            logoutBtn.TabIndex = 2;
+            logoutBtn.Text = "Logout";
+            logoutBtn.UseVisualStyleBackColor = true;
+            logoutBtn.Click += logoutBtn_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(logoutBtn);
             Controls.Add(dataGridView1);
-          //  Controls.Add(button1);
-            Name = "RDP Manager";
+            Name = "Form1";
             Text = "RDP Manager";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
@@ -73,5 +73,6 @@
         //private Button button1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private DataGridView dataGridView1;
+        private Button logoutBtn;
     }
 }

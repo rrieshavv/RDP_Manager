@@ -16,7 +16,7 @@ namespace TaskMDesktop
 
         private void loadDataGrid()
         {
-            string query = "select id, server_ip, title from creds";
+            string query = "select id ID, server_ip as 'SERVER IP', title AS 'TITLE' from creds";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -29,6 +29,13 @@ namespace TaskMDesktop
                     dataAdapter.Fill(dataTable);
 
                     dataGridView1.DataSource = dataTable;
+
+                    dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+                    //// Customize the FillWeight for each column
+                    //dataGridView1.Columns[0].FillWeight = 20; // 20% of the available space
+                    //dataGridView1.Columns[1].FillWeight = 30; // 30% of the available space
+                    //dataGridView1.Columns[2].FillWeight = 50; // 50% of the available space
 
                     DataGridViewButtonColumn btn = new DataGridViewButtonColumn();
                     btn.Name = "connBtn";
@@ -45,29 +52,7 @@ namespace TaskMDesktop
             }
         }
 
-        //private void button1_Click(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        string serverIp = "10.21.146.222";
-        //        string username = @"adserver\rihav";
-        //        string password = "Cook@4062";
-        //        string recentDownloadFilePath = Path.Combine(@"C:\Users\Admin\Downloads", "rdp");
-        //        string rootPath = Application.StartupPath;
-        //        string rdpTempFile = Path.Combine(rootPath, "rdptemp", "rdptmp.txt");
-        //        string rdpPath = Path.Combine(rootPath, "rdp", "rdp.rdp");
-
-        //        //RDPConnect.RDPConnect.Connector(serverIp, username, password, rdpTempFile, rdpPath);
-        //        Connect.RDPConnect.Connector(serverIp, username, password, rdpTempFile, rdpPath);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-
-        //}
-
-        private void ConnectRDP (string serverIp, string username, string password)
+        private void ConnectRDP(string serverIp, string username, string password)
         {
             string recentDownloadFilePath = Path.Combine(@"C:\Users\Admin\Downloads", "rdp");
             string rootPath = Application.StartupPath;
@@ -110,14 +95,14 @@ namespace TaskMDesktop
                                         string username = reader["username"]?.ToString();
                                         string password = reader["password"]?.ToString();
 
-                                        if(!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+                                        if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
                                         {
                                             ConnectRDP(ip_address, username, password);
                                         }
                                         else
                                         {
                                             throw new Exception("Credentials not found.");
-                                        }                                      
+                                        }
                                     }
                                     else
                                     {
@@ -137,6 +122,13 @@ namespace TaskMDesktop
                     MessageBox.Show("Invalid IP address.");
                 }
             }
+        }
+
+        private void logoutBtn_Click(object sender, EventArgs e)
+        {
+            LoginForm loginForm = new LoginForm();
+            loginForm.Show();
+            this.Hide();
         }
     }
 }
