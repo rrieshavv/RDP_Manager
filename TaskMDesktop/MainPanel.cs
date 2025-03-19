@@ -2,13 +2,14 @@
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text;
+using TaskMDesktop.Library;
 
 namespace TaskMDesktop
 {
     public partial class MainPanel : Form
     {
-        private string jsonFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RDPManager", "password.json");
-        private string csvFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RDPManager", "ip.csv");
+        private string jsonFilePath = PasswordManager.GetJsonFilePath();
+        private string csvFilePath = PasswordManager.GetCsvFilePath();
 
         private DataTable credentialsTable;
 
@@ -20,7 +21,7 @@ namespace TaskMDesktop
             // Check if password is set
             if (!File.Exists(jsonFilePath))
             {
-                SetNewPassword();
+                PasswordManager.SetNewPassword();
             }
 
             loginPanel.Visible = true;
@@ -38,7 +39,7 @@ namespace TaskMDesktop
                 return;
             }
 
-            if (ValidatePassword(password))
+            if (PasswordManager.ValidatePassword(password))
             {
                 LoadDataGrid();
                 loginPanel.Visible = false;
@@ -55,72 +56,6 @@ namespace TaskMDesktop
             DataView dv = credentialsTable.DefaultView;
             dv.RowFilter = string.Format("TITLE LIKE '%{0}%' OR [SERVER IP] LIKE '%{0}%' OR USERNAME LIKE '%{0}%'", searchTextBox.Text);
             dataGridView1.DataSource = dv.ToTable(false, "ID", "SERVER IP", "TITLE", "USERNAME"); // Exclude PASSWORD column from being shown
-        }
-
-
-        private void SetNewPassword()
-        {
-            string newPassword = Microsoft.VisualBasic.Interaction.InputBox(
-                "Set your password:", "First-time Setup", "");
-
-            if (!string.IsNullOrEmpty(newPassword))
-            {
-                string jsonDirectory = Path.GetDirectoryName(jsonFilePath)!;
-                string csvDirectory = Path.GetDirectoryName(csvFilePath)!;
-
-                Directory.CreateDirectory(jsonDirectory);
-                Directory.CreateDirectory(csvDirectory);
-
-                string hashedPassword = HashPassword(newPassword);
-
-                var passwordData = new { Password = hashedPassword };
-
-                string json = JsonSerializer.Serialize(passwordData);
-
-                File.WriteAllText(jsonFilePath, json);
-
-                if (!File.Exists(csvFilePath)) 
-                {
-                    File.WriteAllText(csvFilePath, "ID,SERVER IP,TITLE,USERNAME,PASSWORD\n"); 
-                }
-
-                MessageBox.Show($"Password has been set successfully, and an empty CSV file has been created at {csvFilePath}");
-            }
-            else
-            {
-                MessageBox.Show("Password cannot be empty. Please restart the application.");
-                Application.Exit();
-            }
-        }
-
-        private bool ValidatePassword(string enteredPassword)
-        {
-            if (!File.Exists(jsonFilePath))
-                return false;
-
-            string json = File.ReadAllText(jsonFilePath);
-            var storedData = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-
-            if (storedData != null && storedData.ContainsKey("Password"))
-            {
-                return VerifyPassword(enteredPassword, storedData["Password"]);
-            }
-
-            return false;
-        }
-
-        private string HashPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Convert.ToBase64String(bytes);
-            }
-        }
-
-        private bool VerifyPassword(string enteredPassword, string storedHash)
-        {
-            return HashPassword(enteredPassword) == storedHash;
         }
 
         private void LoadDataGrid()
