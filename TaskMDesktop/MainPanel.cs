@@ -50,6 +50,14 @@ namespace TaskMDesktop
             }
         }
 
+        private void searchTextBoxTextChange(object sender, EventArgs e)
+        {
+            DataView dv = credentialsTable.DefaultView;
+            dv.RowFilter = string.Format("TITLE LIKE '%{0}%' OR [SERVER IP] LIKE '%{0}%' OR USERNAME LIKE '%{0}%'", searchTextBox.Text);
+            dataGridView1.DataSource = dv.ToTable(false, "ID", "SERVER IP", "TITLE", "USERNAME"); // Exclude PASSWORD column from being shown
+        }
+
+
         private void SetNewPassword()
         {
             string newPassword = Microsoft.VisualBasic.Interaction.InputBox(
@@ -57,33 +65,26 @@ namespace TaskMDesktop
 
             if (!string.IsNullOrEmpty(newPassword))
             {
-                // Define the directory paths
-                string jsonDirectory = Path.GetDirectoryName(jsonFilePath);
-                string csvDirectory = Path.GetDirectoryName(csvFilePath);
+                string jsonDirectory = Path.GetDirectoryName(jsonFilePath)!;
+                string csvDirectory = Path.GetDirectoryName(csvFilePath)!;
 
-                // Ensure the directories exist
                 Directory.CreateDirectory(jsonDirectory);
                 Directory.CreateDirectory(csvDirectory);
 
-                // Hash the password
                 string hashedPassword = HashPassword(newPassword);
 
-                // Create a JSON object to store the hashed password
                 var passwordData = new { Password = hashedPassword };
 
-                // Serialize the object to a JSON string
                 string json = JsonSerializer.Serialize(passwordData);
 
-                // Write the hashed password to the JSON file
                 File.WriteAllText(jsonFilePath, json);
 
-                // Create an empty CSV file
-                if (!File.Exists(csvFilePath)) // Only create if the file doesn't exist
+                if (!File.Exists(csvFilePath)) 
                 {
-                    File.WriteAllText(csvFilePath, "ID,SERVER IP,TITLE,USERNAME,PASSWORD\n"); // Header for CSV
+                    File.WriteAllText(csvFilePath, "ID,SERVER IP,TITLE,USERNAME,PASSWORD\n"); 
                 }
 
-                MessageBox.Show("Password has been set successfully, and an empty CSV file has been created.");
+                MessageBox.Show($"Password has been set successfully, and an empty CSV file has been created at {csvFilePath}");
             }
             else
             {

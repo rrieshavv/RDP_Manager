@@ -35,6 +35,8 @@
             loginButton = new Button();
             loginTextBox = new TextBox();
             listPanel = new Panel();
+            label2 = new Label();
+            searchTextBox = new TextBox();
             logoutBtn = new Button();
             dataGridView1 = new DataGridView();
             loginPanel.SuspendLayout();
@@ -97,6 +99,9 @@
             // 
             // listPanel
             // 
+            listPanel.BackColor = SystemColors.ActiveCaption;
+            listPanel.Controls.Add(label2);
+            listPanel.Controls.Add(searchTextBox);
             listPanel.Controls.Add(logoutBtn);
             listPanel.Controls.Add(dataGridView1);
             listPanel.Dock = DockStyle.Fill;
@@ -106,9 +111,26 @@
             listPanel.Size = new Size(1649, 1019);
             listPanel.TabIndex = 3;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(1248, 139);
+            label2.Name = "label2";
+            label2.Size = new Size(83, 30);
+            label2.TabIndex = 3;
+            label2.Text = "Search:";
+            // 
+            // searchTextBox
+            // 
+            searchTextBox.Location = new Point(1336, 136);
+            searchTextBox.Name = "searchTextBox";
+            searchTextBox.Size = new Size(301, 37);
+            searchTextBox.TabIndex = 2;
+            searchTextBox.TextChanged += searchTextBoxTextChange;
+            // 
             // logoutBtn
             // 
-            logoutBtn.Location = new Point(1495, 70);
+            logoutBtn.Location = new Point(1495, 42);
             logoutBtn.Name = "logoutBtn";
             logoutBtn.Size = new Size(142, 46);
             logoutBtn.TabIndex = 1;
@@ -130,7 +152,7 @@
             dataGridView1.TabIndex = 0;
             dataGridView1.CellDoubleClick += openRdpDoubleClick;
             // 
-            // NewForm
+            // MainPanel
             // 
             AutoScaleDimensions = new SizeF(12F, 30F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -142,11 +164,12 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4);
             MaximumSize = new Size(1671, 1075);
-            Name = "NewForm";
+            Name = "MainPanel";
             Text = "Task Manager";
             loginPanel.ResumeLayout(false);
             loginPanel.PerformLayout();
             listPanel.ResumeLayout(false);
+            listPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
         }
@@ -161,5 +184,7 @@
         private Label ErrorText;
         private DataGridView dataGridView1;
         private Button logoutBtn;
+        private TextBox searchTextBox;
+        private Label label2;
     }
 }
